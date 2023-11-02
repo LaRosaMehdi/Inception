@@ -1,0 +1,78 @@
+version : "3"
+
+services:
+
+    mariadb:
+        ports: 
+            - ${MDB_PORT}:${MDB_PORT}
+        build: $ABSOLUTE_PATH/requirements/mariadb
+        image: $MDB_IMAGE_NAME
+        container_name: $MDB_CONTAINER_NAME
+        env_file: 
+            - $ENV_FILE
+        networks:
+            - $NETWORK_NAME
+        volumes:
+            - $ABSOLUTE_PATH/requirements/mariadb/data:/var/lib/mysql
+        restart: always
+
+    wordpress:
+        ports:
+            - ${WP_PORT}:${WP_PORT}
+        build:
+            context: $ABSOLUTE_PATH/requirements/wordpress
+            dockerfile: Dockerfile
+            args:
+                - WP_PHP_USER=$WP_PHP_USER
+                - WP_PHP_GROUP=$WP_PHP_GROUP
+        image: $WP_IMAGE_NAME
+        container_name: $WP_CONTAINER_NAME
+        env_file:
+            - $ENV_FILE
+        networks:
+            - $NETWORK_NAME
+        volumes:
+            - $ABSOLUTE_PATH/requirements/wordpress/data:/var/www/html
+        depends_on:
+                - mariadb
+        healthcheck:
+            test: ["CMD-SHELL", "echo 'Wordpress is healthy'"]
+            interval: 20s
+            timeout: 30s
+            retries: 5
+        restart: always
+
+    nginx:
+        ports:
+            - ${NGINX_PORT}:${NGINX_PORT}
+        build: $ABSOLUTE_PATH/requirements/nginx/
+        image: $NGINX_IMAGE_NAME
+        container_name: $NGINX_CONTAINER_NAME
+        networks:
+            - $NETWORK_NAME
+        env_file:
+            - $ENV_FILE
+        volumes: 
+            - $ABSOLUTE_PATH/requirements/nginx/ssl:/etc/nginx/ssl
+            - $ABSOLUTE_PATH/requirements/wordpress/data:/var/www/html  
+        depends_on:
+            wordpress:
+                    condition: service_healthy
+        restart: always
+
+networks:
+    inception : 
+        name: $NETWORK_NAME
+        driver : bridge
+
+volumes:
+    mariadb:
+        name: $MDB_VOLUME_NAME
+        driver: local
+        driver_opts:
+            device:  $ABSOLUTE_PATH/volumes/mariadb
+    wordpress:
+        name: $WP_VOLUME_NAME
+        driver: local
+        driver_opts:
+            device:  $ABSOLUTE_PATH/volumes/wordpress
