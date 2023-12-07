@@ -7,8 +7,8 @@ all:
 	@sudo echo "127.0.0.1 $(DOMAIN_NAME)" >> $(HOSTS)
 	@sudo echo "127.0.0.1 www.$(DOMAIN_NAME)" >> $(HOSTS)
 	@echo "Building and uping the containers"
-	@mkdir -p $(ABSOLUTE_PATH)$(MDB_VOLUME_PATH) $(ABSOLUTE_PATH)$(WP_VOLUME_PATH)
-	@chmod 777 $(ABSOLUTE_PATH)$(MDB_VOLUME_PATH) $(ABSOLUTE_PATH)$(WP_VOLUME_PATH)
+	@mkdir -p $(ABSOLUTE_PATH)$(MDB_VOLUME_PATH) $(WP_VOLUME_PATH)
+	@chmod 777 $(ABSOLUTE_PATH)$(MDB_VOLUME_PATH) $(WP_VOLUME_PATH)
 	@cd srcs && docker-compose up --build -d
 
 clean:
@@ -21,7 +21,7 @@ fclean:
 	@docker system prune -a -f --volumes
 	@docker network prune -f
 	@docker volume rm $$(docker volume ls -qf dangling=true) 2>/dev/null || true
-	@rm -rf $(ABSOLUTE_PATH)$(MDB_VOLUME_PATH) $(ABSOLUTE_PATH)$(WP_VOLUME_PATH)
+	@rm -rf $(ABSOLUTE_PATH)$(MDB_VOLUME_PATH) $(WP_VOLUME_PATH)
 
 re:
 	make fclean

@@ -54,7 +54,7 @@ services:
             - $ENV_FILE
         volumes: 
             - $ABSOLUTE_PATH/requirements/nginx/ssl:/etc/nginx/ssl
-            - $ABSOLUTE_PATH/requirements/wordpress/data:/var/www/html  
+            - inception_wordpress_volume:/var/www/html  
         depends_on:
             wordpress:
                     condition: service_healthy
