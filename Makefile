@@ -20,6 +20,7 @@ fclean:
 	@echo "Removing all the containers, images and volumes"
 	@docker system prune -a -f --volumes
 	@docker network prune -f
+	@docker network rm $$(docker network ls -q) 2>/dev/null || true
 	@docker volume rm $$(docker volume ls -qf dangling=true) 2>/dev/null || true
 	@rm -rf $(ABSOLUTE_PATH)$(MDB_VOLUME_PATH) $(WP_VOLUME_PATH)
 
