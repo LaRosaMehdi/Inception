@@ -1,0 +1,25 @@
+Volumes
+Deux volumes persistants sont créés :
+inception_mariadb_volume : Stockage des données MariaDB
+inception_wordpress_volume : Stockage des fichiers WordPress
+Sécurité
+Utilisation de SSL pour le trafic web
+Configuration sécurisée de PHP-FPM
+Gestion des permissions des volumes
+Configuration réseau isolée
+Dépendances
+Docker
+Docker Compose
+OpenSSL (pour les certificats)
+Installation
+Cloner le dépôt
+Configurer les variables dans srcs/.env
+Exécuter make all
+Maintenance
+Les conteneurs sont configurés pour redémarrer automatiquement
+Les volumes sont persistants
+Les logs sont accessibles via Docker
+Notes
+Le projet nécessite des privilèges sudo pour modifier le fichier hosts
+Les certificats SSL doivent être générés avant le premier démarrage
+Les volumes sont montés en local pour la persistance des données
